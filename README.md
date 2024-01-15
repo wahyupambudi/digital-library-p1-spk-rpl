@@ -1,4 +1,4 @@
-# digital-library-p1-spk-rpl 
+# Digital Library Paket-1 Rekayasa Perangkat Lunak 
 Digital Library Paket-1 Rekayasa Perangkat Lunak
 
 ## Clone Project
