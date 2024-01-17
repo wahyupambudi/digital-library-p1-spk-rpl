@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum role {
+  administrator
+  petugas
+  peminjam
+}
+
+enum status {
+  pinjam
+  selesai
+}
+
+model Users {
+  id      Int      @id @default(autoincrement())
+  userid  Int @unique
+  username    String  @db.VarChar(255)
+  password    String  @db.VarChar(255)
+  email       String  @unique @db.VarChar(255)
+  namalengkap String  @db.VarChar(255)
+  alamat      String  
+  role        role
+  createdAt DateTime @db.Timestamptz  @default(now())
+  updatedAt DateTime  @db.Timestamptz @default(now())
+  deletedAt DateTime? @db.Timestamptz
+  ulasan  Ulasanbuku[]
+  peminjaman Peminjaman[]
+  koleksi Koleksipribadi[]
+}
+
+model Buku {
+  id    Int      @id @default(autoincrement())
+  bukuid Int @unique
+  judul     String  @db.VarChar(255)
+  penulis   String  @db.VarChar(255)
+  penerbit  String  @db.VarChar(255)
+  tahun_terbit Int
+  createdAt DateTime @db.Timestamptz  @default(now())
+  updatedAt DateTime  @db.Timestamptz @default(now())
+  deletedAt DateTime? @db.Timestamptz
+  kategori_relasi  Kategori_buku_relasi[]
+  ulasan  Ulasanbuku[]
+  peminjam Peminjaman[]
+  koleksi Koleksipribadi[]
+}
+
+model Kategoribuku {
+  id Int  @id @default(autoincrement())
+  kategoriid Int @unique
+  nama_kategori String  @db.VarChar(255)
+  createdAt DateTime @db.Timestamptz  @default(now())
+  updatedAt DateTime  @db.Timestamptz @default(now())
+  deletedAt DateTime? @db.Timestamptz  
+  kategori_relasi   Kategori_buku_relasi[]
+}
+
+model Kategori_buku_relasi {
+  id  Int  @id @default(autoincrement())
+  kategori_buku_id  Int @unique
+  createdAt DateTime @db.Timestamptz  @default(now())
+  updatedAt DateTime  @db.Timestamptz @default(now())
+  deletedAt DateTime? @db.Timestamptz
+  kategori_relasi  Kategoribuku  @relation(fields: [kategoriid], references: [kategoriid])
+  kategoriid Int
+  buku  Buku  @relation(fields: [bukuid], references: [bukuid])
+  bukuid Int
+}
+
+model Ulasanbuku {
+  id Int @id @default(autoincrement())
+  ulasan_id Int @unique
+  ulasan String
+  rating Int
+  createdAt DateTime @db.Timestamptz  @default(now())
+  updatedAt DateTime  @db.Timestamptz @default(now())
+  deletedAt DateTime? @db.Timestamptz
+  user  Users  @relation(fields: [userid], references: [userid])
+  userid Int
+  buku  Buku  @relation(fields: [bukuid], references: [bukuid])
+  bukuid Int  
+}
+
+model Peminjaman {
+  peminjaman_id Int @id @default(autoincrement())
+  tanggal_peminjaman DateTime @db.Date
+  tanggal_pengembalian DateTime @db.Date
+  status_peminjaman status
+  createdAt DateTime @db.Timestamptz  @default(now())
+  updatedAt DateTime  @db.Timestamptz @default(now())
+  deletedAt DateTime? @db.Timestamptz
+  user  Users  @relation(fields: [userid], references: [userid])
+  userid Int
+  buku  Buku  @relation(fields: [bukuid], references: [bukuid])
+  bukuid Int
+}
+
+model Koleksipribadi {
+  koleksi_id Int @id @default(autoincrement())
+  createdAt DateTime @db.Timestamptz  @default(now())
+  updatedAt DateTime  @db.Timestamptz @default(now())
+  deletedAt DateTime? @db.Timestamptz
+  user  Users  @relation(fields: [userid], references: [userid])
+  userid Int
+  buku  Buku  @relation(fields: [bukuid], references: [bukuid])
+  bukuid Int
+}
