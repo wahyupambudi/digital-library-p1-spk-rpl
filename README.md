@@ -5,7 +5,7 @@ Digital Library Paket-1 Rekayasa Perangkat Lunak
     git clone https://github.com/wahyupambudi/digital-library-p1-spk-rpl.git
     or
     git clone git@github.com:wahyupambudi/digital-library-p1-spk-rpl.git
-## Project Backend Multi Mesva
+## Project Backend UKK RPL
 
 This is my project Backend Multi Mesva with tech stack `nodeJs, ExpressJs, Postgres`
 The module nodejs used are in `package.json` file.
