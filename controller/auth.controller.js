@@ -7,11 +7,12 @@ require("dotenv").config();
 
 const listTokens = [];
 
-
 async function Register(req, res, next) {
-    const { name, email, password } = req.body;
+    const { userid, username, password, email, namalengkap, alamat, role } =
+        req.body;
 
     const hashPass = await HashPassword(password);
+    console.log(hashPass);
 
     // const payload = {
     //     name,
@@ -20,11 +21,22 @@ async function Register(req, res, next) {
     // };
 
     try {
-        const checkUser = await prisma.users.findUnique({
+        const checkUser = await prisma.Users.findUnique({
             where: {
                 email,
             },
         });
+
+        if (role == "petugas") {
+            let respons = ResponseTemplate(
+                null,
+                "petugas can't register",
+                null,
+                400,
+            );
+            res.status(400).json(respons);
+            return;
+        }
 
         if (checkUser) {
             let respons = ResponseTemplate(
@@ -37,11 +49,26 @@ async function Register(req, res, next) {
             return;
         }
 
-        await prisma.users.create({
+        if (password.length < 8) {
+            let respons = ResponseTemplate(
+                null,
+                "password minimum 8 character",
+                null,
+                400,
+            );
+            res.status(400).json(respons);
+            return;
+        }
+
+        await prisma.Users.create({
             data: {
-                name,
-                email,
+                userid,
+                username,
                 password: hashPass,
+                email,
+                namalengkap,
+                alamat,
+                role,
             },
         });
 
@@ -108,7 +135,7 @@ function whoami(req, res) {
     return;
 }
 
-function logout(req, res) {    
+function logout(req, res) {
     const token = req.headers.authorization;
     if (token) {
         listTokens.push(token);
@@ -126,5 +153,5 @@ module.exports = {
     Login,
     whoami,
     logout,
-    listTokens
+    listTokens,
 };
