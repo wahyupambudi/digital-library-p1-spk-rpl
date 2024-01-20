@@ -4,7 +4,7 @@ const { Get, Insert, Update, Delete } = require("../controller/book.controller")
 const { Authenticate, checkTokenBlacklist } = require("../middleware/restrict");
 
 
-router.post("/", Get);
+router.get("/", Get);
 
 router.post("/", Insert);
 
