@@ -157,6 +157,10 @@ async function Update(req, res) {
     payload.tahun_terbit = parseInt(tahun_terbit);
   }
 
+  if(updatedAt) {
+    payload.updatedAt = updatedAt;
+  }
+
   if (!bukuid || !judul || !penulis || !penerbit || !tahun_terbit) {
     let resp = ResponseTemplate(null, "bad request", null, 400);
     res.status(400).json(resp);
