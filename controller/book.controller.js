@@ -8,7 +8,23 @@ async function Get(req, res) {
   const payload = {};
 
   if (bukuid) {
-    payload.bukuid = bukuid;
+    payload.bukuid = parseInt(bukuid);
+  }
+
+  if (judul) {
+    payload.judul = judul;
+  }
+
+  if (penulis) {
+    payload.penulis = penulis;
+  }
+
+  if (penerbit) {
+    payload.penerbit = penerbit;
+  }
+
+  if (tahun_terbit) {
+    payload.tahun_terbit = parseInt(tahun_terbit);
   }
 
   try {
@@ -20,7 +36,20 @@ async function Get(req, res) {
       take: perPage,
       where: {
         bukuid: payload.bukuid,
-        deletedAt: null
+        judul: {
+          contains: judul,
+          mode: "insensitive",
+        },
+        penulis: {
+          contains: penulis,
+          mode: "insensitive",
+        },
+        penerbit: {
+          contains: penerbit,
+          mode: "insensitive",
+        },
+        tahun_terbit: payload.tahun_terbit,
+        deletedAt: null,
       },
       select: {
         bukuid: true,
@@ -54,9 +83,22 @@ async function Insert(req, res) {
   };
 
   try {
+    const checkBukuId = await prisma.Buku.findUnique({
+      where: {
+        bukuid,
+      },
+    });
+
+    if (checkBukuId) {
+      let resp = ResponseTemplate(null, "bukuid already used", null, 400);
+      res.status(400).json(resp);
+      return;
+    }
+
     const books = await prisma.Buku.create({
       data: payload,
     });
+
     let resp = ResponseTemplate(books, "success", null, 200);
     res.json(resp);
   } catch (error) {
@@ -72,7 +114,38 @@ async function Update(req, res) {
 }
 
 async function Delete(req, res) {
-  const { bukuid, judul, penulis, penerbit, tahun_terbit } = req.body;
+  const { bukuid } = req.params;
+
+  const books = await prisma.Buku.findUnique({
+    where: {
+      bukuid: parseInt(bukuid),
+    },
+  });
+
+  if(!books) {
+    let resp = ResponseTemplate(null, "Buku is Not Found", null, 404);
+    // res.json(resp);
+    res.status(404).json(resp);
+    return;
+  }
+
+  try {
+    const books = await prisma.Buku.delete({
+      where: {
+        bukuid: parseInt(bukuid),
+      },
+    });
+
+    let resp = ResponseTemplate(books, "success", null, 200);
+    res.json(resp);
+    return;
+  } catch (error) {
+    // statements
+    console.log(error);
+    let resp = ResponseTemplate(null, "internal server error", error, 500);
+    res.json(resp);
+    return;
+  }
 }
 
 module.exports = { Get, Insert, Update, Delete };

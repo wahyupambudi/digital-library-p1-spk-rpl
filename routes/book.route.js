@@ -10,6 +10,6 @@ router.post("/", Insert);
 
 // router.get("/whoami", Authenticate, checkTokenBlacklist, whoami);
 
-// router.post("/logout", Authenticate, logout);
+router.delete("/:bukuid", Delete);
 
 module.exports = router;
