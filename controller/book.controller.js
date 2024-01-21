@@ -52,6 +52,7 @@ async function Get(req, res) {
         deletedAt: null,
       },
       select: {
+        id: true,
         bukuid: true,
         judul: true,
         penulis: true,
@@ -82,6 +83,12 @@ async function Insert(req, res) {
     tahun_terbit,
   };
 
+  if (!bukuid || !judul || !penulis || !penerbit || !tahun_terbit) {
+    let resp = ResponseTemplate(null, "bad request", null, 400);
+    res.status(400).json(resp);
+    return;
+  }
+
   try {
     const checkBukuId = await prisma.Buku.findUnique({
       where: {
@@ -90,7 +97,7 @@ async function Insert(req, res) {
     });
 
     if (checkBukuId) {
-      let resp = ResponseTemplate(null, "bukuid already used", null, 400);
+      let resp = ResponseTemplate(null, "Id Buku already used", null, 400);
       res.status(400).json(resp);
       return;
     }
@@ -104,13 +111,77 @@ async function Insert(req, res) {
   } catch (error) {
     console.log(error);
     let resp = ResponseTemplate(null, "internal server error", null, 500);
-    res.json(resp);
+    res.status(500).json(resp);
     return;
   }
 }
 
 async function Update(req, res) {
   const { bukuid, judul, penulis, penerbit, tahun_terbit } = req.body;
+  const { id } = req.params;
+  const updatedAt = new Date();
+
+  // mendapatkan data buku
+  const books = await prisma.Buku.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+  });
+
+  if (!books) {
+    let resp = ResponseTemplate(null, "Buku is Not Found", null, 404);
+    res.status(404).json(resp);
+    return;
+  }
+
+  // menyimpan data terbaru
+  const payload = {};
+
+  if (bukuid) {
+    payload.bukuid = parseInt(bukuid);
+  }
+
+  if (judul) {
+    payload.judul = judul;
+  }
+
+  if (penulis) {
+    payload.penulis = penulis;
+  }
+
+  if (penerbit) {
+    payload.penerbit = penerbit;
+  }
+
+  if (tahun_terbit) {
+    payload.tahun_terbit = parseInt(tahun_terbit);
+  }
+
+  if (!bukuid || !judul || !penulis || !penerbit || !tahun_terbit) {
+    let resp = ResponseTemplate(null, "bad request", null, 400);
+    res.status(400).json(resp);
+    return;
+  }
+
+  try {
+    const books = await prisma.Buku.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: payload,
+    });
+
+    let resp = ResponseTemplate(books, "success", null, 200);
+    res.json(resp);
+    return;
+  } catch (error) {
+    console.log(error);
+    if (error.code === "P2002") {
+      let resp = ResponseTemplate(null, "Id Buku already used", null, 500);
+      res.status(500).json(resp);
+      return;
+    }
+  }
 }
 
 async function Delete(req, res) {
@@ -122,7 +193,7 @@ async function Delete(req, res) {
     },
   });
 
-  if(!books) {
+  if (!books) {
     let resp = ResponseTemplate(null, "Buku is Not Found", null, 404);
     // res.json(resp);
     res.status(404).json(resp);
@@ -143,7 +214,7 @@ async function Delete(req, res) {
     // statements
     console.log(error);
     let resp = ResponseTemplate(null, "internal server error", error, 500);
-    res.json(resp);
+    res.status(500).json(resp);
     return;
   }
 }
