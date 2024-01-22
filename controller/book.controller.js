@@ -190,14 +190,16 @@ async function Update(req, res) {
 
 async function Delete(req, res) {
   const { bukuid } = req.params;
+  const deletedAt = new Date();
 
-  const books = await prisma.Buku.findUnique({
+
+  const booksDeleted = await prisma.Buku.findUnique({
     where: {
       bukuid: parseInt(bukuid),
     },
   });
 
-  if (!books) {
+  if (!booksDeleted) {
     let resp = ResponseTemplate(null, "Buku is Not Found", null, 404);
     // res.json(resp);
     res.status(404).json(resp);
@@ -205,10 +207,14 @@ async function Delete(req, res) {
   }
 
   try {
-    const books = await prisma.Buku.delete({
+    const books = await prisma.Buku.update({
       where: {
         bukuid: parseInt(bukuid),
       },
+      data: {
+        bukuid: parseInt(-`${booksDeleted.id}${bukuid}`),
+        deletedAt
+      }
     });
 
     let resp = ResponseTemplate(books, "success", null, 200);
