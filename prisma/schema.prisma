@@ -67,50 +67,50 @@ model Kategoribuku {
 model Kategori_buku_relasi {
   id  Int  @id @default(autoincrement())
   kategori_buku_id  Int @unique
+  buku  Buku  @relation(fields: [bukuid], references: [bukuid])
+  bukuid Int
+  kategori_relasi  Kategoribuku  @relation(fields: [kategoriid], references: [kategoriid])
+  kategoriid Int
   createdAt DateTime @db.Timestamptz  @default(now())
   updatedAt DateTime  @db.Timestamptz @default(now())
   deletedAt DateTime? @db.Timestamptz
-  kategori_relasi  Kategoribuku  @relation(fields: [kategoriid], references: [kategoriid])
-  kategoriid Int
-  buku  Buku  @relation(fields: [bukuid], references: [bukuid])
-  bukuid Int
 }
 
 model Ulasanbuku {
   id Int @id @default(autoincrement())
   ulasan_id Int @unique
+  user  Users  @relation(fields: [userid], references: [userid])
+  userid Int
+  buku  Buku  @relation(fields: [bukuid], references: [bukuid])
+  bukuid Int 
   ulasan String
   rating Int
   createdAt DateTime @db.Timestamptz  @default(now())
   updatedAt DateTime  @db.Timestamptz @default(now())
-  deletedAt DateTime? @db.Timestamptz
-  user  Users  @relation(fields: [userid], references: [userid])
-  userid Int
-  buku  Buku  @relation(fields: [bukuid], references: [bukuid])
-  bukuid Int  
+  deletedAt DateTime? @db.Timestamptz 
 }
 
 model Peminjaman {
   peminjaman_id Int @id @default(autoincrement())
+  user  Users  @relation(fields: [userid], references: [userid])
+  userid Int
+  buku  Buku  @relation(fields: [bukuid], references: [bukuid])
+  bukuid Int
   tanggal_peminjaman DateTime @db.Date
   tanggal_pengembalian DateTime @db.Date
   status_peminjaman status
   createdAt DateTime @db.Timestamptz  @default(now())
   updatedAt DateTime  @db.Timestamptz @default(now())
   deletedAt DateTime? @db.Timestamptz
-  user  Users  @relation(fields: [userid], references: [userid])
-  userid Int
-  buku  Buku  @relation(fields: [bukuid], references: [bukuid])
-  bukuid Int
 }
 
 model Koleksipribadi {
   koleksi_id Int @id @default(autoincrement())
-  createdAt DateTime @db.Timestamptz  @default(now())
-  updatedAt DateTime  @db.Timestamptz @default(now())
-  deletedAt DateTime? @db.Timestamptz
   user  Users  @relation(fields: [userid], references: [userid])
   userid Int
   buku  Buku  @relation(fields: [bukuid], references: [bukuid])
   bukuid Int
+  createdAt DateTime @db.Timestamptz  @default(now())
+  updatedAt DateTime  @db.Timestamptz @default(now())
+  deletedAt DateTime? @db.Timestamptz
 }
