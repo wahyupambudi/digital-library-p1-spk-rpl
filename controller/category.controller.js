@@ -2,6 +2,51 @@ const { ResponseTemplate } = require("../helper/template.helper");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+async function Get(req, res) {
+  const { kategoriid, nama_kategori } = req.query;
+  const payload = {};
+
+  if (kategoriid) {
+    payload.kategoriid = parseInt(kategoriid);
+  }
+
+  if (nama_kategori) {
+    payload.nama_kategori = nama_kategori;
+  }
+
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const perPage = parseInt(req.query.perPage) || 10;
+    const skip = (page - 1) * perPage;
+    const categories = await prisma.Kategoribuku.findMany({
+      skip,
+      take: perPage,
+      where: {
+        kategoriid: payload.kategoriid,
+        nama_kategori: {
+          contains: nama_kategori,
+          mode: "insensitive",
+        },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        kategoriid: true,
+        nama_kategori: true
+      },
+    });
+
+    let resp = ResponseTemplate(categories, "success", null, 200);
+    res.json(resp);
+    return;
+  } catch (error) {
+    console.log(error);
+    let resp = ResponseTemplate(null, "internal server error", error, 500);
+    res.json(resp);
+    return;
+  }
+}
+
 async function Insert(req, res) {
   const { kategoriid, nama_kategori } = req.body;
 
@@ -43,4 +88,4 @@ async function Insert(req, res) {
   }
 }
 
-module.exports = { Insert };
+module.exports = {Get, Insert };
