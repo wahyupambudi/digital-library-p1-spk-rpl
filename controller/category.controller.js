@@ -3,39 +3,33 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function Insert(req, res) {
-  const { kategori_buku_id, kategoriid, bukuid } = req.body;
+  const { kategoriid, nama_kategori } = req.body;
 
   const payload = {
-    kategori_buku_id,
     kategoriid,
-    bukuid,
+    nama_kategori,
   };
 
-  if (!kategori_buku_id || !kategoriid || !bukuid) {
+  if (!kategoriid || !nama_kategori) {
     let resp = ResponseTemplate(null, "bad request", null, 400);
     res.status(400).json(resp);
     return;
   }
 
   try {
-    const checkRelationCategory = await prisma.Kategori_buku_relasi.findUnique({
+    const checkKategoriId = await prisma.Kategoribuku.findUnique({
       where: {
-        kategori_buku_id,
+        kategoriid,
       },
     });
 
-    if (checkRelationCategory) {
-      let resp = ResponseTemplate(
-        null,
-        "Id Kategori Relation already used",
-        null,
-        400,
-      );
+    if (checkKategoriId) {
+      let resp = ResponseTemplate(null, "Id Kategori already used", null, 400);
       res.status(400).json(resp);
       return;
     }
 
-    const categories = await prisma.Kategori_buku_relasi.create({
+    const categories = await prisma.Kategoribuku.create({
       data: payload,
     });
 
