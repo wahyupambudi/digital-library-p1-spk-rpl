@@ -88,4 +88,43 @@ async function Insert(req, res) {
   }
 }
 
-module.exports = {Get, Insert };
+async function Delete(req, res) {
+  const {kategoriid} = req.params;
+  const deletedAt = new Date();
+
+  const categoriesBook = await prisma.Kategoribuku.findUnique({
+    where: {
+      kategoriid: parseInt(kategoriid)
+    }
+  })
+
+  if(!categoriesBook) {
+    let resp = ResponseTemplate(null, "Kategoribuku is Not Found", null, 404)
+    res.status(404).json(resp)
+    return;
+  }
+
+  try {
+    const categories = await prisma.Kategoribuku.update({
+      where: {
+        kategoriid: parseInt(kategoriid),
+      }, 
+      data: {
+        // unique value for soft delete
+        kategoriid: parseInt(-`${categoriesBook.id}${kategoriid}`),
+        deletedAt
+      }
+    })
+    let resp = ResponseTemplate(categories, "success", null, 202);
+    res.json(resp)
+    return;
+  } catch(error) {
+    console.log(error);
+    let resp = ResponseTemplate(null, "internal server error", null, 500);
+    res.status(500).json(resp);
+    return;
+  }
+
+}
+
+module.exports = {Get, Insert, Delete};

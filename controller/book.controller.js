@@ -217,7 +217,7 @@ async function Delete(req, res) {
   } catch (error) {
     // statements
     console.log(error);
-    let resp = ResponseTemplate(null, "internal server error", error, 500);
+    let resp = ResponseTemplate(null, "internal server error", null, 500);
     res.status(500).json(resp);
     return;
   }
