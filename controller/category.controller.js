@@ -1,4 +1,4 @@
-const { ResponseTemplate } = require("../helper/template.helper");
+const { ResponseTemplate, ResGet } = require("../helper/template.helper");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
@@ -17,6 +17,12 @@ async function Get(req, res) {
   try {
     const page = parseInt(req.query.page) || 1;
     const perPage = parseInt(req.query.perPage) || 10;
+    const resultCount = await prisma.Kategoribuku.count({
+      where: {
+        deletedAt: null,
+      },
+    });
+    const totalPage = Math.ceil(resultCount / perPage);
     const skip = (page - 1) * perPage;
     const categories = await prisma.Kategoribuku.findMany({
       skip,
@@ -36,7 +42,15 @@ async function Get(req, res) {
       },
     });
 
-    let resp = ResponseTemplate(categories, "success", null, 200);
+    let resp = ResGet(
+      200,
+      "success",
+      null,
+      page,
+      totalPage,
+      resultCount,
+      categories,
+    );
     res.json(resp);
     return;
   } catch (error) {
