@@ -1,6 +1,10 @@
 # UKK Digital Library Paket1 Rekayasa Perangkat Lunak 
 Digital Library Paket-1 Rekayasa Perangkat Lunak
 
+## ERD
+
+![ERD Digitalibrary](erd.pgerd.png)
+
 ## Clone Project
     git clone https://github.com/wahyupambudi/digital-library-p1-spk-rpl.git
     or
