@@ -1,6 +1,68 @@
-const { ResponseTemplate } = require("../helper/template.helper");
+const { ResponseTemplate, ResGet } = require("../helper/template.helper");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+
+async function Get(req, res) {
+  const { kategori_buku_id, bukuid, kategoriid } = req.query;
+  const payload = {};
+
+  if (kategori_buku_id) {
+    payload.kategori_buku_id = parseInt(kategori_buku_id);
+  }
+
+  if (bukuid) {
+    payload.bukuid = parseInt(bukuid);
+  }
+
+  if (kategoriid) {
+    payload.kategoriid = parseInt(kategoriid);
+  }
+
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const perPage = parseInt(req.query.perPage) || 10;
+    const resultCount = await prisma.Kategori_buku_relasi.count({
+      where: {
+        deletedAt: null,
+      },
+    });
+    const totalPage = Math.ceil(resultCount / perPage);
+    const skip = (page - 1) * perPage;
+    const categories = await prisma.Kategori_buku_relasi.findMany({
+      skip,
+      take: perPage,
+      where: {
+        kategori_buku_id: payload.kategori_buku_id,
+        bukuid: payload.bukuid,
+        kategoriid: payload.kategoriid,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        kategori_buku_id: true,
+        bukuid: true,
+        kategoriid: true
+      },
+    });
+
+    let resp = ResGet(
+      200,
+      "success",
+      null,
+      page,
+      totalPage,
+      resultCount,
+      categories,
+    );
+    res.json(resp);
+    return;
+  } catch (error) {
+    console.log(error);
+    let resp = ResponseTemplate(null, "internal server error", error, 500);
+    res.status(500).json(resp)
+    return;
+  }
+}
 
 async function Insert(req, res) {
   const { kategori_buku_id, kategoriid, bukuid } = req.body;
@@ -49,4 +111,4 @@ async function Insert(req, res) {
   }
 }
 
-module.exports = { Insert };
+module.exports = {Get, Insert };
