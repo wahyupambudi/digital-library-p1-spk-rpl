@@ -56,7 +56,7 @@ async function Get(req, res) {
   } catch (error) {
     console.log(error);
     let resp = ResponseTemplate(null, "internal server error", error, 500);
-    res.json(resp);
+    res.status(500).json(resp)
     return;
   }
 }
