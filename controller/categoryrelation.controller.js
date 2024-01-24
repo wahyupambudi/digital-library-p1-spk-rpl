@@ -41,7 +41,7 @@ async function Get(req, res) {
         id: true,
         kategori_buku_id: true,
         bukuid: true,
-        kategoriid: true
+        kategoriid: true,
       },
     });
 
@@ -59,7 +59,7 @@ async function Get(req, res) {
   } catch (error) {
     console.log(error);
     let resp = ResponseTemplate(null, "internal server error", error, 500);
-    res.status(500).json(resp)
+    res.status(500).json(resp);
     return;
   }
 }
@@ -111,4 +111,49 @@ async function Insert(req, res) {
   }
 }
 
-module.exports = {Get, Insert };
+async function Delete(req, res) {
+  const { kategori_buku_id } = req.params;
+  const deletedAt = new Date();
+
+  const categoriesRelation = await prisma.Kategori_buku_relasi.findUnique({
+    where: {
+      kategori_buku_id: parseInt(kategori_buku_id),
+    },
+  });
+
+  if (!categoriesRelation) {
+    let resp = ResponseTemplate(
+      null,
+      "Data Not Found",
+      null,
+      404,
+    );
+    res.status(404).json(resp);
+    return;
+  }
+
+  try {
+    const updateRelation = await prisma.Kategori_buku_relasi.update({
+      where: {
+        kategori_buku_id: parseInt(kategori_buku_id),
+      },
+      data: {
+        // unique value for soft delete
+        kategori_buku_id: parseInt(
+          -`${categoriesRelation.id}${kategori_buku_id}`,
+        ),
+        deletedAt,
+      },
+    });
+    let resp = ResponseTemplate(updateRelation, "success", null, 202);
+    res.json(resp);
+    return;
+  } catch (error) {
+    console.log(error);
+    let resp = ResponseTemplate(null, "internal server error", null, 500);
+    res.status(500).json(resp);
+    return;
+  }
+}
+
+module.exports = { Get, Insert, Delete };
