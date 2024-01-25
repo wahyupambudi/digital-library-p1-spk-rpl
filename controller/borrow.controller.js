@@ -10,7 +10,93 @@ async function Get(req, res) {
     tanggal_peminjaman,
     tanggal_pengembalian,
     status_peminjaman,
-  } = req.body;
+  } = req.query;
+
+  const payload = {};
+
+  if (peminjaman_id) {
+    payload.peminjaman_id = parseInt(peminjaman_id);
+  }
+
+  if (userid) {
+    payload.userid = parseInt(userid);
+  }
+
+  if (bukuid) {
+    payload.bukuid = parseInt(bukuid);
+  }
+
+  if (tanggal_pengembalian !== undefined) {
+    payload.tanggal_pengembalian = tanggal_pengembalian+"T00:00:00.000Z";
+  } else {
+    payload.tanggal_pengembalian = undefined
+  }
+
+  if (tanggal_peminjaman !== undefined) {
+    payload.tanggal_peminjaman = tanggal_peminjaman+"T00:00:00.000Z";
+  } else {
+    payload.tanggal_peminjaman = undefined
+  }
+
+  payload.status_peminjaman =
+    status_peminjaman !== undefined ? [status_peminjaman] : undefined;
+
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const perPage = parseInt(req.query.perPage) || 10;
+    const resultCount = await prisma.Peminjaman.count({
+      where: {
+        deletedAt: null,
+      },
+    });
+    const totalPage = Math.ceil(resultCount / perPage);
+    const skip = (page - 1) * perPage;
+    const borrows = await prisma.Peminjaman.findMany({
+      skip,
+      take: perPage,
+      where: {
+        peminjaman_id: payload.peminjaman_id,
+        userid: payload.userid,
+        bukuid: payload.bukuid,
+        tanggal_peminjaman: {
+          equals: payload.tanggal_peminjaman
+        },
+        tanggal_pengembalian: {
+          equals: payload.tanggal_pengembalian
+        },
+        status_peminjaman: {
+          in: payload.status_peminjaman,
+        },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        peminjaman_id: true,
+        userid: true,
+        bukuid: true,
+        tanggal_peminjaman: true,
+        tanggal_pengembalian: true,
+        status_peminjaman: true,
+      },
+    });
+
+    let resp = ResGet(
+      200,
+      "success",
+      null,
+      page,
+      totalPage,
+      resultCount,
+      borrows,
+    );
+    res.json(resp);
+    return;
+  } catch (error) {
+    console.log(error);
+    let resp = ResponseTemplate(null, "internal server error", error, 500);
+    res.json(resp);
+    return;
+  }
 }
 
 async function Insert(req, res) {
@@ -71,4 +157,4 @@ async function Insert(req, res) {
   }
 }
 
-module.exports = {Get, Insert, };
+module.exports = { Get, Insert };
