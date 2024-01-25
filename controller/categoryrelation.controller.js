@@ -132,7 +132,8 @@ async function Update(req, res) {
   const payload = {
     kategori_buku_id,
     bukuid,
-    kategoriid
+    kategoriid,
+    updatedAt
   };
 
   // if (kategori_buku_id) {
