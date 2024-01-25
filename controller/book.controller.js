@@ -30,7 +30,7 @@ async function Get(req, res) {
   try {
     const page = parseInt(req.query.page) || 1;
     const perPage = parseInt(req.query.perPage) || 10;
-    const resultCount = await prisma.Kategoribuku.count({
+    const resultCount = await prisma.Buku.count({
       where: {
         deletedAt: null,
       },
