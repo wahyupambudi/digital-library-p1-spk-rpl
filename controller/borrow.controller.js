@@ -12,6 +12,13 @@ async function Get(req, res) {
     status_peminjaman,
   } = req.query;
 
+  function setPayloadDate(property, date) {
+    if (date !== undefined) {
+      return date + "T00:00:00.000Z";
+    }
+    return undefined;
+  }
+
   const payload = {};
 
   if (peminjaman_id) {
@@ -26,17 +33,15 @@ async function Get(req, res) {
     payload.bukuid = parseInt(bukuid);
   }
 
-  if (tanggal_pengembalian !== undefined) {
-    payload.tanggal_pengembalian = tanggal_pengembalian+"T00:00:00.000Z";
-  } else {
-    payload.tanggal_pengembalian = undefined
-  }
+  payload.tanggal_pengembalian = setPayloadDate(
+    "tanggal_pengembalian",
+    tanggal_pengembalian,
+  );
 
-  if (tanggal_peminjaman !== undefined) {
-    payload.tanggal_peminjaman = tanggal_peminjaman+"T00:00:00.000Z";
-  } else {
-    payload.tanggal_peminjaman = undefined
-  }
+  payload.tanggal_peminjaman = setPayloadDate(
+    "tanggal_peminjaman",
+    tanggal_peminjaman,
+  );
 
   payload.status_peminjaman =
     status_peminjaman !== undefined ? [status_peminjaman] : undefined;
@@ -59,10 +64,10 @@ async function Get(req, res) {
         userid: payload.userid,
         bukuid: payload.bukuid,
         tanggal_peminjaman: {
-          equals: payload.tanggal_peminjaman
+          equals: payload.tanggal_peminjaman,
         },
         tanggal_pengembalian: {
-          equals: payload.tanggal_pengembalian
+          equals: payload.tanggal_pengembalian,
         },
         status_peminjaman: {
           in: payload.status_peminjaman,
