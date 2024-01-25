@@ -111,6 +111,73 @@ async function Insert(req, res) {
   }
 }
 
+async function Update(req, res) {
+  const { kategori_buku_id, kategoriid, bukuid } = req.body;
+  const { id } = req.params;
+  const updatedAt = new Date();
+
+  // get relation
+  const getCategories = await prisma.Kategori_buku_relasi.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+  });
+
+  if (!getCategories) {
+    let resp = ResponseTemplate(null, "Data Not Found", null, 404);
+    res.status(404).json(resp);
+    return;
+  }
+
+  const payload = {
+    kategori_buku_id,
+    bukuid,
+    kategoriid
+  };
+
+  // if (kategori_buku_id) {
+  //   payload.kategori_buku_id = parseInt(kategori_buku_id);
+  // }
+
+  // if (bukuid) {
+  //   payload.bukuid = parseInt(bukuid);
+  // }
+
+  // if (kategoriid) {
+  //   payload.kategoriid = parseInt(kategoriid);
+  // }
+
+  if (!kategori_buku_id || !kategoriid || !bukuid) {
+    let resp = ResponseTemplate(null, "bad request", null, 400);
+    res.status(400).json(resp);
+    return;
+  }
+
+  try {
+    const getRelationCategories = await prisma.Kategori_buku_relasi.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: payload,
+    });
+    let resp = ResponseTemplate(getRelationCategories, "success", null, 200);
+    res.json(resp);
+    return;
+  } catch (error) {
+    // statements
+    console.log(error);
+    if (error.code === "P2002") {
+      let resp = ResponseTemplate(null, "Id Kategori Relasi already used", null, 500);
+      res.status(500).json(resp);
+      return;
+    } else if (error.code === "P2003") {
+      let resp = ResponseTemplate(null, "Data Id Not Found", null, 500);
+      res.status(500).json(resp);
+      return;
+    }
+  }
+}
+
 async function Delete(req, res) {
   const { kategori_buku_id } = req.params;
   const deletedAt = new Date();
@@ -122,12 +189,7 @@ async function Delete(req, res) {
   });
 
   if (!categoriesRelation) {
-    let resp = ResponseTemplate(
-      null,
-      "Data Not Found",
-      null,
-      404,
-    );
+    let resp = ResponseTemplate(null, "Data Not Found", null, 404);
     res.status(404).json(resp);
     return;
   }
@@ -156,4 +218,4 @@ async function Delete(req, res) {
   }
 }
 
-module.exports = { Get, Insert, Delete };
+module.exports = { Get, Insert, Update, Delete };
