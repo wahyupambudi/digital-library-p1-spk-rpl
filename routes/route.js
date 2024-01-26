@@ -16,7 +16,7 @@ router.use("/api/v1/book", bookRoute);
 router.use("/api/v1/category", categoryRoute);
 router.use("/api/v1/category-relation", categoryrelationRoute);
 router.use("/api/v1/borrow-book", borrowRoute);
-router.use("/api/v1/collection", reviewRoute);
-router.use("/api/v1/review", collectionRoute);
+router.use("/api/v1/collection", collectionRoute);
+router.use("/api/v1/review", reviewRoute);
 
 module.exports = router;
