@@ -162,6 +162,83 @@ async function Insert(req, res) {
   }
 }
 
+async function Update(req, res) {
+  const {
+    peminjaman_id,
+    userid,
+    bukuid,
+    tanggal_peminjaman,
+    tanggal_pengembalian,
+    status_peminjaman,
+    updatedAt,
+  } = req.body;
+  const { id } = req.params;
+
+  // get borrow
+  const getBorrow = await prisma.Peminjaman.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+  });
+
+  if (!getBorrow) {
+    let resp = ResponseTemplate(null, "Data is not found");
+    res.status(400).json(resp);
+    return;
+  }
+
+  const payload = {
+    peminjaman_id,
+    userid,
+    bukuid,
+    tanggal_peminjaman,
+    tanggal_pengembalian,
+    status_peminjaman,
+    updatedAt: new Date(),
+  };
+
+  if (
+    !peminjaman_id ||
+    !userid ||
+    !bukuid ||
+    !tanggal_peminjaman ||
+    !tanggal_pengembalian ||
+    !status_peminjaman
+  ) {
+    let resp = ResponseTemplate(null, "bad request", null, 400);
+    res.status(400).json(resp);
+    return;
+  }
+
+  try {
+    const updatedBorrow = await prisma.Peminjaman.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: payload,
+    });
+    let resp = ResponseTemplate(updatedBorrow, "success", null, 200);
+    res.json(resp);
+  } catch (error) {
+    // statements
+    console.log(error);
+    if (error.code === "P2002") {
+      let resp = ResponseTemplate(
+        null,
+        "Id Borrow Relasi already used",
+        null,
+        500,
+      );
+      res.status(500).json(resp);
+      return;
+    } else if (error.code === "P2003") {
+      let resp = ResponseTemplate(null, "Data Id Not Found", null, 500);
+      res.status(500).json(resp);
+      return;
+    }
+  }
+}
+
 async function Delete(req, res) {
   const { peminjaman_id } = req.params;
   const deletedAt = new Date();
@@ -181,17 +258,17 @@ async function Delete(req, res) {
   try {
     const deleteBorrow = await prisma.Peminjaman.update({
       where: {
-        peminjaman_id: parseInt(peminjaman_id)
+        peminjaman_id: parseInt(peminjaman_id),
       },
       data: {
         peminjaman_id: parseInt(-`${getBorrow.id}${peminjaman_id}`),
-        deletedAt
-      }
-    })
-    let resp = ResponseTemplate(deleteBorrow, "success", null, 200)
+        deletedAt,
+      },
+    });
+    let resp = ResponseTemplate(deleteBorrow, "success", null, 200);
     res.json(resp);
-    return
-  } catch(error) {
+    return;
+  } catch (error) {
     // statements
     console.log(error);
     let resp = ResponseTemplate(null, "internal server error", null, 500);
@@ -200,4 +277,4 @@ async function Delete(req, res) {
   }
 }
 
-module.exports = { Get, Insert, Delete };
+module.exports = { Get, Insert, Update, Delete };
