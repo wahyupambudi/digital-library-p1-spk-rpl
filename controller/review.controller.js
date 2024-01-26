@@ -11,7 +11,7 @@ async function Get(req, res) {
   }
 
   if (userid) {
-    payload.userid = userid;
+    payload.userid = parseInt(userid);
   }
 
   if (bukuid) {
