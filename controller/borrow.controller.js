@@ -162,4 +162,42 @@ async function Insert(req, res) {
   }
 }
 
-module.exports = { Get, Insert };
+async function Delete(req, res) {
+  const { peminjaman_id } = req.params;
+  const deletedAt = new Date();
+
+  const getBorrow = await prisma.Peminjaman.findUnique({
+    where: {
+      peminjaman_id: parseInt(peminjaman_id),
+    },
+  });
+
+  if (!getBorrow) {
+    let resp = ResponseTemplate(null, "Data is not found");
+    res.status(400).json(resp);
+    return;
+  }
+
+  try {
+    const deleteBorrow = await prisma.Peminjaman.update({
+      where: {
+        peminjaman_id: parseInt(peminjaman_id)
+      },
+      data: {
+        peminjaman_id: parseInt(-`${getBorrow.id}${peminjaman_id}`),
+        deletedAt
+      }
+    })
+    let resp = ResponseTemplate(deleteBorrow, "success", null, 200)
+    res.json(resp);
+    return
+  } catch(error) {
+    // statements
+    console.log(error);
+    let resp = ResponseTemplate(null, "internal server error", null, 500);
+    res.status(500).json(resp);
+    return;
+  }
+}
+
+module.exports = { Get, Insert, Delete };

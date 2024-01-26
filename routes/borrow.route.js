@@ -7,6 +7,6 @@ const { Authenticate, checkTokenBlacklist } = require("../middleware/restrict");
 router.get("/", Get);
 router.post("/", Insert);
 // router.put("/:id", Update);
-// router.delete("/:kategoriid", Delete);
+router.delete("/:peminjaman_id", Delete);
 
 module.exports = router;
