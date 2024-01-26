@@ -106,7 +106,8 @@ model Peminjaman {
 }
 
 model Koleksipribadi {
-  koleksi_id Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+  koleksi_id Int @unique
   user  Users  @relation(fields: [userid], references: [userid])
   userid Int
   buku  Buku  @relation(fields: [bukuid], references: [bukuid])
