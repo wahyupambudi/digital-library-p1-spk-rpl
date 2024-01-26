@@ -28,7 +28,7 @@ async function Get(req, res) {
     });
     const totalPage = Math.ceil(resultCount / perPage);
     const skip = (page - 1) * perPage;
-    const categories = await prisma.Koleksipribadi.findMany({
+    const getCollection = await prisma.Koleksipribadi.findMany({
       skip,
       take: perPage,
       where: {
@@ -51,7 +51,7 @@ async function Get(req, res) {
       page,
       totalPage,
       resultCount,
-      categories,
+      getCollection,
     );
     res.json(resp);
     return;
@@ -79,13 +79,13 @@ async function Insert(req, res) {
   }
 
   try {
-    const checkRelationCategory = await prisma.Koleksipribadi.findUnique({
+    const checkCollection = await prisma.Koleksipribadi.findUnique({
       where: {
         koleksi_id,
       },
     });
 
-    if (checkRelationCategory) {
+    if (checkCollection) {
       let resp = ResponseTemplate(
         null,
         "Id Kategori Relation already used",
@@ -96,11 +96,11 @@ async function Insert(req, res) {
       return;
     }
 
-    const categories = await prisma.Koleksipribadi.create({
+    const collection = await prisma.Koleksipribadi.create({
       data: payload,
     });
 
-    let resp = ResponseTemplate(categories, "success", null, 200);
+    let resp = ResponseTemplate(collection, "success", null, 200);
     res.json(resp);
   } catch (error) {
     console.log(error);
@@ -116,13 +116,13 @@ async function Update(req, res) {
   const updatedAt = new Date();
 
   // get relation
-  const getCategories = await prisma.Koleksipribadi.findUnique({
+  const getCollection = await prisma.Koleksipribadi.findUnique({
     where: {
       id: parseInt(id),
     },
   });
 
-  if (!getCategories) {
+  if (!getCollection) {
     let resp = ResponseTemplate(null, "Data Not Found", null, 404);
     res.status(404).json(resp);
     return;
@@ -142,13 +142,13 @@ async function Update(req, res) {
   }
 
   try {
-    const getRelationCategories = await prisma.Koleksipribadi.update({
+    const getCollection = await prisma.Koleksipribadi.update({
       where: {
         id: parseInt(id),
       },
       data: payload,
     });
-    let resp = ResponseTemplate(getRelationCategories, "success", null, 200);
+    let resp = ResponseTemplate(getCollection, "success", null, 200);
     res.json(resp);
     return;
   } catch (error) {
@@ -170,32 +170,32 @@ async function Delete(req, res) {
   const { koleksi_id } = req.params;
   const deletedAt = new Date();
 
-  const categoriesRelation = await prisma.Koleksipribadi.findUnique({
+  const getCollection = await prisma.Koleksipribadi.findUnique({
     where: {
       koleksi_id: parseInt(koleksi_id),
     },
   });
 
-  if (!categoriesRelation) {
+  if (!getCollection) {
     let resp = ResponseTemplate(null, "Data Not Found", null, 404);
     res.status(404).json(resp);
     return;
   }
 
   try {
-    const updateRelation = await prisma.Koleksipribadi.update({
+    const updateCollection = await prisma.Koleksipribadi.update({
       where: {
         koleksi_id: parseInt(koleksi_id),
       },
       data: {
         // unique value for soft delete
         koleksi_id: parseInt(
-          -`${categoriesRelation.id}${koleksi_id}`,
+          -`${getCollection.id}${koleksi_id}`,
         ),
         deletedAt,
       },
     });
-    let resp = ResponseTemplate(updateRelation, "success", null, 202);
+    let resp = ResponseTemplate(updateCollection, "success", null, 202);
     res.json(resp);
     return;
   } catch (error) {
