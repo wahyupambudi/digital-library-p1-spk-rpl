@@ -27,7 +27,15 @@ function ResGet(
 	};
 }
 
+function setPayloadDate(property, date) {
+	if (date !== undefined) {
+		return date + "T00:00:00.000Z";
+	}
+	return undefined;
+}
+
 module.exports = {
 	ResponseTemplate,
-	ResGet
+	ResGet,
+	setPayloadDate
 };

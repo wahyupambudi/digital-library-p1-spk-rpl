@@ -1,4 +1,8 @@
-const { ResponseTemplate, ResGet } = require("../helper/template.helper");
+const {
+  ResponseTemplate,
+  ResGet,
+  setPayloadDate,
+} = require("../helper/template.helper");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
@@ -11,13 +15,6 @@ async function Get(req, res) {
     tanggal_pengembalian,
     status_peminjaman,
   } = req.query;
-
-  function setPayloadDate(property, date) {
-    if (date !== undefined) {
-      return date + "T00:00:00.000Z";
-    }
-    return undefined;
-  }
 
   const payload = {};
 
@@ -114,12 +111,18 @@ async function Insert(req, res) {
     status_peminjaman,
   } = req.body;
 
+  const tgl_pinjam = setPayloadDate("tanggal_peminjaman", tanggal_peminjaman);
+  const tgl_kembali = setPayloadDate(
+    "tanggal_pengembalian",
+    tanggal_pengembalian,
+  );
+
   const payload = {
     peminjaman_id,
     userid,
     bukuid,
-    tanggal_peminjaman,
-    tanggal_pengembalian,
+    tanggal_peminjaman: tgl_pinjam,
+    tanggal_pengembalian: tgl_kembali,
     status_peminjaman,
   };
 
