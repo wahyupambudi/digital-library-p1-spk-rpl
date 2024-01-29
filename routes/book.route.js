@@ -135,7 +135,7 @@ router.delete("/:bukuid", Delete);
 // Delete
 /**
  * @swagger
- * /api/v1/book/{id}:
+ * /api/v1/book/{bookid}:
  *   delete:
  *     tags:
  *      - "CRUD Book"

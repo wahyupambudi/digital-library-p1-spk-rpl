@@ -43,6 +43,7 @@ const swaggerOptions = {
   apis: [
     "./routes/auth.route.js",
     "./routes/book.route.js",
+    "./routes/borrow.route.js",
   ],
 };
 
