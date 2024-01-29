@@ -47,3 +47,4 @@ This is file .env for environment in project
 - [x] Postman
 - [x] Visual Studio Code
 - [x] DBDiagram
+- [x] Swagger
