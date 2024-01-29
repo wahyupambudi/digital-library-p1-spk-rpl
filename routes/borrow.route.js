@@ -111,22 +111,25 @@ router.delete("/:peminjaman_id", Delete);
  *           schema:
  *             type: object
  *             properties:
+ *               peminjaman_id:
+ *                 type: integer
+ *               userid:
+ *                 type: integer
  *               bukuid:
  *                 type: integer
- *               judul:
+ *               tanggal_peminjaman:
  *                 type: string
- *               penulis:
+ *               tanggal_pengembalian:
  *                 type: string
- *               penerbit:
+ *               status_peminjaman:
  *                 type: string
- *               tahun_terbit:
- *                 type: integer
  *           example:
+ *              peminjaman_id: 1
+ *              userid: 2
  *              bukuid: 1
- *              judul: "title of book"
- *              penulis: "wahyup"
- *              penerbit: "erlangga"
- *              tahun_terbit: 2024
+ *              tanggal_peminjaman: "2024-01-01"
+ *              tanggal_pengembalian: "2024-01-10"
+ *              status_peminjaman: "selesai"
  *     responses:
  *       200:
  *         description: Book Updated successfully
@@ -139,7 +142,7 @@ router.delete("/:peminjaman_id", Delete);
 // Delete
 /**
  * @swagger
- * /api/v1/borrow-book/{borrowid}:
+ * /api/v1/borrow-book/{id}:
  *   delete:
  *     tags:
  *      - "CRUD Borrow Book"

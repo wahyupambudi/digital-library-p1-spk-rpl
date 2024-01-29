@@ -190,12 +190,18 @@ async function Update(req, res) {
     return;
   }
 
+  const tgl_pinjam = setPayloadDate("tanggal_peminjaman", tanggal_peminjaman);
+  const tgl_kembali = setPayloadDate(
+    "tanggal_pengembalian",
+    tanggal_pengembalian,
+  );
+
   const payload = {
     peminjaman_id,
     userid,
     bukuid,
-    tanggal_peminjaman,
-    tanggal_pengembalian,
+    tanggal_peminjaman: tgl_pinjam,
+    tanggal_pengembalian: tgl_kembali,
     status_peminjaman,
     updatedAt: new Date(),
   };
