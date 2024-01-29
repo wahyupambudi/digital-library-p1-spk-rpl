@@ -74,6 +74,10 @@ router.delete("/:bukuid", Delete);
  *                 type: integer
  *           example:
  *              bukuid: 1
+ *              judul: "title of book"
+ *              penulis: "wahyup"
+ *              penerbit: "erlangga"
+ *              tahun_terbit: 2024
  *     responses:
  *       201:
  *         description: Book created successfully
@@ -103,21 +107,29 @@ router.delete("/:bukuid", Delete);
  *           schema:
  *             type: object
  *             properties:
- *               task:
+ *               bukuid:
+ *                 type: integer
+ *               judul:
  *                 type: string
- *               description:
+ *               penulis:
  *                 type: string
- *               start:
+ *               penerbit:
  *                 type: string
- *                 format: date-time
- *               finish:
- *                 type: string
- *                 format: date-time
- *               status:
- *                 type: string
+ *               tahun_terbit:
+ *                 type: integer
+ *           example:
+ *              bukuid: 1
+ *              judul: "title of book"
+ *              penulis: "wahyup"
+ *              penerbit: "erlangga"
+ *              tahun_terbit: 2024
  *     responses:
  *       200:
- *         description: Book updated successfully
+ *         description: Book Updated successfully
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Book Not Found 
  */
 
 // Delete
@@ -137,8 +149,12 @@ router.delete("/:bukuid", Delete);
  *         schema:
  *           type: integer
  *     responses:
- *       204:
+ *       200:
  *         description: Book deleted successfully
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Book Not Found 
  */
 
 module.exports = router;
