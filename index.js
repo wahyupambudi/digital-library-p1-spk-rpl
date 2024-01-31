@@ -44,6 +44,7 @@ const swaggerOptions = {
     "./routes/auth.route.js",
     "./routes/book.route.js",
     "./routes/borrow.route.js",
+    "./routes/category.route.js",
   ],
 };
 
