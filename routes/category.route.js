@@ -94,22 +94,13 @@ router.delete("/:kategoriid", Delete);
  *           schema:
  *             type: object
  *             properties:
- *               bukuid:
+ *               kategoriid:
  *                 type: integer
- *               judul:
+ *               nama_kategori:
  *                 type: string
- *               penulis:
- *                 type: string
- *               penerbit:
- *                 type: string
- *               tahun_terbit:
- *                 type: integer
  *           example:
- *              bukuid: 1
- *              judul: "title of Category"
- *              penulis: "wahyup"
- *              penerbit: "erlangga"
- *              tahun_terbit: 2024
+ *              kategoriid: 1
+ *              nama_kategori: "technolgy"
  *     responses:
  *       200:
  *         description: Category Updated successfully
