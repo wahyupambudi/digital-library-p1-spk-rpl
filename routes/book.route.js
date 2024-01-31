@@ -10,7 +10,7 @@ router.put("/:id", Update);
 router.delete("/:bukuid", Delete);
 
 
-// Get Todolist
+// Get Book
 /**
  * @swagger
  * /api/v1/book:

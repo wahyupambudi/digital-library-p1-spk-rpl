@@ -9,7 +9,7 @@ router.post("/", Insert);
 router.put("/:id", Update);
 router.delete("/:peminjaman_id", Delete);
 
-// Get Todolist
+// Get Book Borrow
 /**
  * @swagger
  * /api/v1/borrow-book:
