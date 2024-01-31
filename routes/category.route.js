@@ -10,19 +10,19 @@ router.put("/:id", Update);
 router.delete("/:kategoriid", Delete);
 
 
-// Get Book
+// Get Category
 /**
  * @swagger
  * /api/v1/category:
  *   get:
  *     tags:
  *      - "CRUD Category"
- *     summary: Get all Book
+ *     summary: Get all Category
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: A list of Book
+ *         description: A list of Category
  *         content:
  *           application/json:
  *             schema:
@@ -32,27 +32,21 @@ router.delete("/:kategoriid", Delete);
  *                 properties:
  *                   id:
  *                     type: integer
- *                   bukuid:
+ *                   kategoriid:
  *                     type: integer
- *                   judul:
+ *                   nama_kategori:
  *                      type: string
- *                   penulis:
- *                      type: string
- *                   penerbit:
- *                      type: string
- *                   tahun_terbit:
- *                      type: integer
  */
 
 
-// Post Book
+// Post Category
 /**
  * @swagger
  * /api/v1/category:
  *   post:
  *     tags:
  *      - "CRUD Category"
- *     summary: Create a new Book
+ *     summary: Create a new Category
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -62,38 +56,29 @@ router.delete("/:kategoriid", Delete);
  *           schema:
  *             type: object
  *             properties:
- *               bukuid:
+ *               kategoriid:
  *                 type: integer
- *               judul:
+ *               nama_kategori:
  *                 type: string
- *               penulis:
- *                 type: string
- *               penerbit:
- *                 type: string
- *               tahun_terbit:
- *                 type: integer
  *           example:
- *              bukuid: 1
- *              judul: "title of book"
- *              penulis: "wahyup"
- *              penerbit: "erlangga"
- *              tahun_terbit: 2024
+ *              kategoriid: 1
+ *              nama_kategori: "technolgy"
  *     responses:
  *       200:
- *         description: Book created successfully
+ *         description: Category created successfully
  *       400:
  *         description: Bad Request
  */
 
 
-// Update Book
+// Update Category
 /**
  * @swagger
  * /api/v1/category/{id}:
  *   put:
  *     tags:
  *      - "CRUD Category"
- *     summary: Update an Book by ID
+ *     summary: Update an Category by ID
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -121,17 +106,17 @@ router.delete("/:kategoriid", Delete);
  *                 type: integer
  *           example:
  *              bukuid: 1
- *              judul: "title of book"
+ *              judul: "title of Category"
  *              penulis: "wahyup"
  *              penerbit: "erlangga"
  *              tahun_terbit: 2024
  *     responses:
  *       200:
- *         description: Book Updated successfully
+ *         description: Category Updated successfully
  *       400:
  *         description: Bad Request
  *       404:
- *         description: Book Not Found 
+ *         description: Category Not Found 
  */
 
 // Delete
@@ -141,7 +126,7 @@ router.delete("/:kategoriid", Delete);
  *   delete:
  *     tags:
  *      - "CRUD Category"
- *     summary: Delete an Book by ID
+ *     summary: Delete an Category by ID
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -152,11 +137,11 @@ router.delete("/:kategoriid", Delete);
  *           type: integer
  *     responses:
  *       200:
- *         description: Book deleted successfully
+ *         description: Category deleted successfully
  *       400:
  *         description: Bad Request
  *       404:
- *         description: Book Not Found 
+ *         description: Category Not Found 
  */
 
 module.exports = router;
