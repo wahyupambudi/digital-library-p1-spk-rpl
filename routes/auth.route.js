@@ -26,8 +26,10 @@ const { Authenticate, checkTokenBlacklist } = require("../middleware/restrict");
  *               password:
  *                 type: string
  *     responses:
- *       201:
- *         description: Register successfully
+ *       200:
+ *         description: Book created successfully
+ *       400:
+ *         description: Bad Request
  */
 router.post("/register", Register);
 

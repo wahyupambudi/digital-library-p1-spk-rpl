@@ -79,8 +79,10 @@ router.delete("/:kategoriid", Delete);
  *              penerbit: "erlangga"
  *              tahun_terbit: 2024
  *     responses:
- *       201:
+ *       200:
  *         description: Book created successfully
+ *       400:
+ *         description: Bad Request
  */
 
 

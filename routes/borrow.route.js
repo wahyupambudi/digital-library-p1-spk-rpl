@@ -83,8 +83,10 @@ router.delete("/:peminjaman_id", Delete);
  *              tanggal_pengembalian: "2024-01-10"
  *              status_peminjaman: "selesai"
  *     responses:
- *       201:
+ *       200:
  *         description: Book created successfully
+ *       400:
+ *         description: Bad Request
  */
 
 
